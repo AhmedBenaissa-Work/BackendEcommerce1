@@ -57,8 +57,9 @@ route.post("/check_reset_password",CustomerAuthenticationController.reset_passwo
 route.post("/forgot_password",CustomerAuthenticationController.ForgotPassword)
 route.put('/set_password',CustomerAuthenticationController.set_password)
 route.post("/confirm_account",CustomerAuthenticationController.ConfirmAccount)
-route.put('/check_confirm_account',CustomerAuthenticationController.confirm_link)
+route.post('/check_confirm_account',CustomerAuthenticationController.confirm_link)
 route.get("/get_cookie",auth.getUserDataFromCookie)
+route.get("/get_user_data",CustomerAuthenticationController.findUserData_By_Token)
 
 
 

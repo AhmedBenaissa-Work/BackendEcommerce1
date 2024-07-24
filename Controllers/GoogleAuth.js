@@ -186,7 +186,7 @@ const confirm_link=async(req,res)=>{
         let jwtSecretKey = hash.toString(CryptoJS.enc.Base64);       
         let data = {
             time: Date(),
-            Email:req.body.email,
+            email:req.body.email,
             id:random
         }
         const token = jwt.sign(data, jwtSecretKey);
@@ -199,11 +199,27 @@ const confirm_link=async(req,res)=>{
             res.send("token expired")
         }
         else {
-            let link='http://localhost:3000/confirmq='+token 
+            let link='http://localhost:3000/confirm?q='+token 
             res.send(link)       
         
         }
     };
+    const findUserData_By_Token=async(req,res)=>{
+    try{
+    const authToken = req.headers.authorization;
+    const jwt = require('jsonwebtoken');
+
+    const secretKey = ``; // Using this as a secret key
+    const token1  = authToken // paste token here
+    decoded=jwt.decode(token1,secretKey)
+    console.log(decoded)
+    user=await users.findOne({email:decoded.Email})
+    res.json(user)
+    }
+    catch(error){
+        console.log(error)
+    }
+    }
     const reset_password_link=async(req,res)=>{
 
         console.log(req.body)
@@ -212,7 +228,7 @@ const confirm_link=async(req,res)=>{
         let jwtSecretKey = hash.toString(CryptoJS.enc.Base64);       
         let data = {
             time: Date(),
-            Email:req.body.email,
+            email:req.body.email,
             id:random
         }
         const token = jwt.sign(data, jwtSecretKey);
@@ -277,5 +293,5 @@ module.exports={
     Google_Auth_CallBack,
     ForgotPassword,
     reset_password_link,
-    set_password,ConfirmAccount,confirm_link
+    set_password,ConfirmAccount,confirm_link,findUserData_By_Token
 }
