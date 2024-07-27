@@ -200,7 +200,7 @@ const confirm_link=async(req,res)=>{
         }
         else {
             let link='http://localhost:3000/confirm?q='+token 
-            res.send(link)       
+            res.redirect(link)       
         
         }
     };
@@ -241,8 +241,8 @@ const confirm_link=async(req,res)=>{
             res.send("token expired")
         }
         else {
-            let link='http://localhost:3000/forgot_password_customer?q='+token 
-            res.send(link)       
+            let link='http://localhost:3000/reset_password?q='+token 
+            res.redirect(link)       
         
         }
     };
@@ -255,6 +255,7 @@ const set_password = async(req,res)=>{
         const token1  = authToken 
     
         token_data=jwt.decode(token1,secretKey)
+        console.log(token1)
         if(token_data==undefined){
         res.send
         ({
@@ -265,7 +266,7 @@ const set_password = async(req,res)=>{
             //user=await users.findOne({email:token_data.Email})
             const salt = 10;
             const hashedPassword = await bcrypt.hash(req.body.password, salt);
-            const filter={email:token_data.Email}
+            const filter={email:token_data.email}
             const update={
               password : hashedPassword
             }

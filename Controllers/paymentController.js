@@ -31,6 +31,9 @@ const register_card=async(req,res)=>{
     res.send(paymentMethod2)
   
   }
+const confirm_card_payment = async(req,res)=>{
+  
+}
 const add_other_resources = async (req,res)=>{
     const paymentMethod = await stripe.paymentMethods.create({
         type: 'card',
