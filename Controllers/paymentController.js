@@ -32,8 +32,48 @@ const register_card=async(req,res)=>{
   
   }
 const confirm_card_payment = async(req,res)=>{
-  
-}
+  const authToken = req.headers.authorization;
+    const jwt = require('jsonwebtoken');
+
+    const secretKey = ``; // Using this as a secret key
+    const token1  = authToken // paste token here
+
+    token_data=jwt.decode(token1,secretKey)
+    if(token_data==undefined){
+      res.send
+      ({
+        "code":400,
+        "reason":"unauthorized"
+      })}
+  else{
+    console.log(token_data)
+  const stripe_customer =  await stripe.customers.search({
+    query: 'email:\''+ token_data.email +'\'',
+  });
+  console.log(stripe_customer.data)
+  if(stripe_customer.data.length==0){
+    res.send("Transaction Failed")
+  }
+  else{
+  console.log(stripe_customer.data[0].id)
+  const paymentMethods = await stripe.customers.listPaymentMethods(
+    stripe_customer.data[0].id,
+    {type: 'card'}
+  );
+  console.log(paymentMethods)
+  console.log(paymentMethods.data[0].id)
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: req.body.amount,
+    currency: 'usd',
+    payment_method_types: ['card'],
+    payment_method: paymentMethods.data[0].id,
+    customer:stripe_customer.data[0].id,
+    confirm:true
+  });
+  console.log(paymentIntent)
+  res.json(paymentIntent)
+}}}
+
 const add_other_resources = async (req,res)=>{
     const paymentMethod = await stripe.paymentMethods.create({
         type: 'card',
@@ -82,4 +122,5 @@ module.exports={
     register_card,
     add_other_resources
     ,paypal_payment
+    ,confirm_card_payment
 }
