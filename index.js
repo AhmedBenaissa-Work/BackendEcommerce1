@@ -18,9 +18,11 @@ app.use(express.json())
 const AuthRoutes=require('./Routes/AuthRoutes')
 const ProductRoutes=require("./Routes/ProductsRoutes")
 const PaymentRoutes=require("./Routes/PaymentRoutes")
+const OrdersRoutes=require("./Routes/OrdersRoutes")
 app.use("/auth",AuthRoutes)
 app.use("/products",ProductRoutes)
 app.use("/payment",PaymentRoutes)
+app.use("/orders",OrdersRoutes)
 app.listen(PORT, () => {
      console.log(`server is running at port ${PORT}`);
 });
