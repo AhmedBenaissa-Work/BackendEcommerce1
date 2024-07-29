@@ -7,6 +7,8 @@ paypal.configure({
   'client_id': process.env.paypal_client_id,
   'client_secret': process.env.paypal_client_secret
 });
+const{ Web3 }= require('web3');
+const web3 = new Web3("http://127.0.0.1:8545")
 const register_card=async(req,res)=>{
     const paymentMethod = await stripe.paymentMethods.create({
       type: 'card',
@@ -117,10 +119,46 @@ const paypal_payment=async (req,res)=>{
         }
     });
     }
+    const crypto_transaction = async (req, res) => {
+      const { sender, receiver, amount } = req.body;
+    
+      if (!sender || !receiver || !amount) {
+        return res.status(400).send('Sender address, receiver address, and amount are required.');
+      }
+    
+      try {
+        
+        let accounts;
+     web3.eth.getAccounts()
+    .then(accs => { accounts = accs; })
+     .catch(err => console.error('Error fetching accounts:', err));
+        //web3.eth.accounts.wallet.add(account);
+        //web3.eth.accounts.wallet.add(account);
+        const nonce = await web3.eth.getTransactionCount(sender, 'latest');
+        console.log(nonce)
+    
+        const transaction = {
+          from: sender,
+          to: receiver,
+          value: web3.utils.toWei(amount.toString(), 'ether'),
+          gas: 21000,
+          gasPrice: web3.utils.toWei('10', 'gwei'),
+          nonce: nonce,
+        };
+        console.log(web3.eth.accounts.wallet)
+        const signedTx = await web3.eth.accounts.signTransaction(transaction,'31191f29b56730094566ab3a2765df5a58acd11a6a4e5f48dacc0246b66c5031');
+        const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    
+        res.status(200).send(`Transaction successful with hash: ${receipt.transactionHash}`);
+      } catch (error) {
+        console.log(error)
+        res.status(500).send(`Transaction failed: ${error.message}`);
+      }
+    }
   
 module.exports={
     register_card,
     add_other_resources
     ,paypal_payment
-    ,confirm_card_payment
+    ,confirm_card_payment,crypto_transaction
 }
