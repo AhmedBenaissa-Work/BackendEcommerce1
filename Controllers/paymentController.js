@@ -128,11 +128,15 @@ const paypal_payment=async (req,res)=>{
     
       try {
         
-        let accounts;
-     web3.eth.getAccounts()
-    .then(accs => { accounts = accs; })
-     .catch(err => console.error('Error fetching accounts:', err));
-        //web3.eth.accounts.wallet.add(account);
+    
+     
+     accounts=await web3.eth.getAccounts( (err,docs)=>{
+
+      if(err) console.log(err)
+      if(docs) console.log("docs",docs)
+    });
+  
+        
         //web3.eth.accounts.wallet.add(account);
         const nonce = await web3.eth.getTransactionCount(sender, 'latest');
         console.log(nonce)
@@ -145,11 +149,11 @@ const paypal_payment=async (req,res)=>{
           gasPrice: web3.utils.toWei('10', 'gwei'),
           nonce: nonce,
         };
-        console.log(web3.eth.accounts.wallet)
-        const signedTx = await web3.eth.accounts.signTransaction(transaction,'31191f29b56730094566ab3a2765df5a58acd11a6a4e5f48dacc0246b66c5031');
-        const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-    
-        res.status(200).send(`Transaction successful with hash: ${receipt.transactionHash}`);
+        console.log(web3.eth.accounts.wallet.entries.toString())
+       
+        r=await web3.eth.sendTransaction(transaction)
+       
+        res.status(200).send(`Transaction successful with hash: `+r.transactionHash);
       } catch (error) {
         console.log(error)
         res.status(500).send(`Transaction failed: ${error.message}`);
