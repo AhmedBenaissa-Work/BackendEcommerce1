@@ -171,7 +171,7 @@ const get_all_products = async (req,res)=>{
   })}
   else{
   if(token_data.role=="admin" || token_data.role=="customer"){
-      console.log("it's admin")
+      console.log("it's ",token_data.role)
     
 
       const docs = await mining_product.find({}); 
@@ -208,11 +208,20 @@ const decrease_on_order = async (req,res)=>{
   })}
   else{
   if(token_data.role=="customer"){
-      const doc = await mining_product.findById(req.params.id); 
-      const output = await doc.update({
-          availability_in_stock:doc.availability_in_stock-1,
-          }) 
-          res.json(output)
+      const doc = await mining_product.find({_id:req.params.id});
+      const filter={_id:req.params.id}
+        const update={
+          availability_in_stock:doc[0].availability_in_stock-1,
+        }
+      console.log(doc)
+      const output=await mining_product.findOne(filter)
+      if(output){
+      await mining_product.findOneAndUpdate(filter, update); 
+
+      res.json("updated")
+      }
+      
+      
   }
   else{
       res.send

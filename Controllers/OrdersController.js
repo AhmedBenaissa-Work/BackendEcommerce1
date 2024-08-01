@@ -32,6 +32,35 @@ const place_order = async(req,res)=>{
         }}
   
 }
+const view_orders = async(req,res)=>{
+
+    const authToken = req.headers.authorization;
+    const jwt = require('jsonwebtoken');
+  
+    const secretKey = ``; // Using this as a secret key
+    const token1  = authToken // paste token here
+    token_data=jwt.decode(token1,secretKey)
+    if(token_data==undefined){
+        res.send
+        ({
+          "code":400,
+          "reason":"unauthorized"
+        })}
+        else{
+        if(token_data.role=="customer" ){
+            
+            const orders = await order.find({'user_id':token_data.id});
+            res.json(orders)
+        }
+        else{
+            res.send
+            ({
+              "code":400,
+              "reason":"unauthorized"
+            })
+        }}
+  
+}
 module.exports={
-    place_order
+    place_order,view_orders
 }

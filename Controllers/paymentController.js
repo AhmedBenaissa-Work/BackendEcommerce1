@@ -54,26 +54,54 @@ const confirm_card_payment = async(req,res)=>{
   });
   console.log(stripe_customer.data)
   if(stripe_customer.data.length==0){
-    res.send("Transaction Failed")
+    const customer = await stripe.customers.create({
+      description: 'My First Test Customer (created for API docs at https://www.stripe.com/docs/api)',
+      name:req.body.cus_name,
+      email:token_data.email
+    });
+    const paymentMethod = await stripe.paymentMethods.create({
+      type: 'card',
+      card: {
+        number: req.body.number,
+        exp_month: req.body.exp_month,
+        exp_year: req.body.exp_year,
+        cvc: req.body.cvc,
+      }})
+    console.log(paymentMethod)
+   // console.log(paymentMethod.data)
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: req.body.amount,
+      currency: 'usd',
+      payment_method_types: ['card'],
+      payment_method: paymentMethod.id,
+      customer:customer.id,
+      confirm:true
+    });
+    console.log(paymentIntent)
+    res.json(paymentIntent)
   }
   else{
   console.log(stripe_customer.data[0].id)
-  const paymentMethods = await stripe.customers.listPaymentMethods(
-    stripe_customer.data[0].id,
-    {type: 'card'}
-  );
-  console.log(paymentMethods)
-  console.log(paymentMethods.data[0].id)
+  const paymentMethod = await stripe.paymentMethods.create({
+    type: 'card',
+    card: {
+      number: req.body.number,
+      exp_month: req.body.exp_month,
+      exp_year: req.body.exp_year,
+      cvc: req.body.cvc,
+    }})
+  console.log(paymentMethod)
+  console.log(paymentMethod.data)
   const paymentIntent = await stripe.paymentIntents.create({
     amount: req.body.amount,
     currency: 'usd',
     payment_method_types: ['card'],
-    payment_method: paymentMethods.data[0].id,
+    payment_method: paymentMethod.id,
     customer:stripe_customer.data[0].id,
     confirm:true
   });
   console.log(paymentIntent)
-  res.json(paymentIntent)
+  res.json({"payment_confirm":paymentIntent,"paymentMethod":paymentMethod.card})
 }}}
 
 const add_other_resources = async (req,res)=>{
