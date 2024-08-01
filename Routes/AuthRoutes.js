@@ -59,7 +59,7 @@ route.put('/set_password',CustomerAuthenticationController.set_password)
 route.post("/confirm_account",CustomerAuthenticationController.ConfirmAccount)
 route.post('/check_confirm_account',CustomerAuthenticationController.confirm_link)
 route.get("/get_cookie",auth.getUserDataFromCookie)
-route.get("/get_user_data",CustomerAuthenticationController.findUserData_By_Token)
+route.post("/get_user_data",CustomerAuthenticationController.findUserData_By_Token)
 
 
 
