@@ -52,8 +52,8 @@ const GoogleAuthSignIn = async (req, res) => {
 
 
     console.log("cookie set succesfully");
-
-    res.json(user);
+    
+    res.redirect("http://localhost:3000/confirm?q="+token);
         }
         else{
             user=await users.create({
@@ -207,13 +207,14 @@ const confirm_link=async(req,res)=>{
     const findUserData_By_Token=async(req,res)=>{
     try{
     const authToken = req.headers.authorization;
+    console.log(authToken)
     const jwt = require('jsonwebtoken');
 
     const secretKey = ``; // Using this as a secret key
     const token1  = authToken // paste token here
     decoded=jwt.decode(token1,secretKey)
-    console.log(decoded)
-    user=await users.findOne({email:decoded.Email})
+    console.log("decoded==",decoded)
+    user=await users.findOne({email:decoded.email})
     res.json(user)
     }
     catch(error){
