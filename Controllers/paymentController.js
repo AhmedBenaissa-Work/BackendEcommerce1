@@ -8,6 +8,7 @@ paypal.configure({
   'client_secret': process.env.paypal_client_secret
 });
 const{ Web3 }= require('web3');
+const Payment = require("../Entities/Payment");
 const web3 = new Web3("http://127.0.0.1:8545")
 const register_card=async(req,res)=>{
     const paymentMethod = await stripe.paymentMethods.create({
@@ -184,13 +185,41 @@ const paypal_payment=async (req,res)=>{
         res.status(200).send(`Transaction successful with hash: `+r.transactionHash);
       } catch (error) {
         console.log(error)
-        res.status(500).send(`Transaction failed: ${error.message}`);
+        res.status(400).send(`Transaction failed: ${error.message}`);
       }
     }
+
+const save_payment_record = async(req,res)=>{
+      const authToken = req.headers.authorization;
+        const jwt = require('jsonwebtoken');
+    
+        const secretKey = ``; // Using this as a secret key
+        const token1  = authToken // paste token here
+    
+        token_data=jwt.decode(token1,secretKey)
+        if(token_data.id==undefined)
+        {
+          res.status(400).send(`Transaction Unauthorized`);
+        }
+        else
+        {
+          const payment_obj = new Payment({
+            user_id:token_data.id,
+            product_id:req.body.product_id,
+            amount:req.body.amount,
+            payment_method:req.body.method                
+        })
+        const payment = await payment_obj.save();
+        res.json(payment)
+        }
+    }    
   
 module.exports={
     register_card,
     add_other_resources
     ,paypal_payment
-    ,confirm_card_payment,crypto_transaction
+    ,confirm_card_payment,
+    crypto_transaction,
+    save_payment_record
 }
+
