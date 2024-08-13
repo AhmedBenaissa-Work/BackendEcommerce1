@@ -20,8 +20,8 @@ const place_order = async(req,res)=>{
                 product_id:req.body.product_id,
                 shipment_address:req.body.shipment_address                
             })
-            const product = await order_obj.save();
-            res.json(product)
+            const order = await order_obj.save();
+            res.json(order)
         }
         else{
             res.send
