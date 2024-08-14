@@ -190,12 +190,11 @@ const paypal_payment=async (req,res)=>{
     }
 
 const save_payment_record = async(req,res)=>{
-      const authToken = req.headers.authorization;
+        
+        const authToken = req.headers.authorization;
         const jwt = require('jsonwebtoken');
-    
         const secretKey = ``; // Using this as a secret key
         const token1  = authToken // paste token here
-    
         token_data=jwt.decode(token1,secretKey)
         if(token_data.id==undefined)
         {
