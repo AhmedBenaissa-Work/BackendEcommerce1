@@ -166,7 +166,7 @@ const paypal_payment=async (req,res)=>{
     });
   
         
-        //web3.eth.accounts.wallet.add(account);
+       
         const nonce = await web3.eth.getTransactionCount(sender, 'latest');
         console.log(nonce)
     
@@ -212,13 +212,39 @@ const save_payment_record = async(req,res)=>{
         res.json(payment)
         }
     }    
-  
+
+    const transactions = async(req,res)=>
+    {
+      try
+      {
+      const authToken = req.headers.authorization;
+      const jwt = require('jsonwebtoken');
+      const secretKey = ``; // Using this as a secret key
+      const token1  = authToken // paste token here
+      token_data=jwt.decode(token1,secretKey)
+      if(token_data.id==undefined)
+      {
+        res.status(400).send(`Transaction Unauthorized`);
+      }
+      else
+      {
+        Payment.find({user_id:token_data.id}).then((resp)=>{
+          res.send(resp)
+        })
+      }
+     }
+     catch(error)
+     {
+      res.status(400).send(`Error while Getting list of payment transactions!: ${error.message}`);
+     }
+    }  
 module.exports={
     register_card,
-    add_other_resources
-    ,paypal_payment
-    ,confirm_card_payment,
+    add_other_resources,
+    paypal_payment,
+    confirm_card_payment,
     crypto_transaction,
-    save_payment_record
+    save_payment_record,
+    transactions
 }
 

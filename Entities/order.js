@@ -19,6 +19,10 @@ const OrderSchema = new Schema({
   shipment_address: { 
     type: String, 
     required: true 
+  },
+  quantity: { 
+    type: Number, 
+    required: true 
   }
 });
 const Order = mongoose.model("orders", OrderSchema);

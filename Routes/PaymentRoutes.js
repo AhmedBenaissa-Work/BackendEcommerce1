@@ -7,4 +7,5 @@ route.get('/paypal/success/:amount',PaymentController.paypal_payment)
 route.post('/confirm_credit_card_payment',PaymentController.confirm_card_payment)
 route.post("/crypto_transaction",PaymentController.crypto_transaction)
 route.post("/save",PaymentController.save_payment_record)
+route.post("/transactions",PaymentController.transactions)
 module.exports=route

@@ -211,7 +211,7 @@ const decrease_on_order = async (req,res)=>{
       const doc = await mining_product.find({_id:req.params.id});
       const filter={_id:req.params.id}
         const update={
-          availability_in_stock:doc[0].availability_in_stock-1,
+          availability_in_stock:doc[0].availability_in_stock-req.body.quantity,
         }
       console.log(doc)
       const output=await mining_product.findOne(filter)

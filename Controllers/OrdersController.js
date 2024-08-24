@@ -18,7 +18,8 @@ const place_order = async(req,res)=>{
             const order_obj = new order({
                 user_id:token_data.id,
                 product_id:req.body.product_id,
-                shipment_address:req.body.shipment_address                
+                shipment_address:req.body.shipment_address,
+                quantity:req.body.quantity              
             })
             const order_1 = await order_obj.save();
             res.json(order_1)
