@@ -23,6 +23,10 @@ const OrderSchema = new Schema({
   quantity: { 
     type: Number, 
     required: true 
+  },
+  status : {
+    type: String,
+    enum: ['pending', 'paid', 'done']
   }
 });
 const Order = mongoose.model("orders", OrderSchema);

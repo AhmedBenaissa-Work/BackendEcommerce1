@@ -150,19 +150,26 @@ const paypal_payment=async (req,res)=>{
     }
     const crypto_transaction = async (req, res) => {
       const { sender, receiver, amount } = req.body;
+      try{
     
       if (!sender || !receiver || !amount) {
         return res.status(400).send('Sender address, receiver address, and amount are required.');
       }
     
       try {
-        
+        const authToken = req.headers.authorization;
+        const jwt = require('jsonwebtoken');
     
-     
+        const secretKey = ``; // Using this as a secret key
+        const token1  = authToken // paste token here
+    
+        token_data=jwt.decode(token1,secretKey) 
+        if(token_data.role=="customer" && token_data.id!=undefined)
+        {
      accounts=await web3.eth.getAccounts( (err,docs)=>{
 
       if(err) console.log(err)
-      if(docs) console.log("docs",docs)
+      if(docs) console.log("docs")
     });
   
         
@@ -183,9 +190,12 @@ const paypal_payment=async (req,res)=>{
         r=await web3.eth.sendTransaction(transaction)
        
         res.status(200).send(`Transaction successful with hash: `+r.transactionHash);
-      } catch (error) {
+      }} catch (error) {
         console.log(error)
         res.status(400).send(`Transaction failed: ${error.message}`);
+      }
+      }catch(error){
+        res.status(400).send(`Transaction Unauthorized`);
       }
     }
 
